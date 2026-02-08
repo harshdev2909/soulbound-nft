@@ -40,6 +40,7 @@ export default function Home() {
   const [mintBatchAddresses, setMintBatchAddresses] = useState("");
   const [txStatus, setTxStatus] = useState<string | null>(null);
   const [addToWalletTokenId, setAddToWalletTokenId] = useState("1");
+  const [betaAddresses, setBetaAddresses] = useState<Set<string> | null>(null);
 
   // Use connected wallet address (e.g. MetaMask) so we show NFTs for the right account
   const userAddress =
@@ -94,6 +95,19 @@ export default function Home() {
     if (!userAddress) return;
     fetchBalance();
   }, [userAddress, fetchBalance]);
+
+  useEffect(() => {
+    if (!authenticated) {
+      setBetaAddresses(null);
+      return;
+    }
+    fetch("/api/beta-users")
+      .then((r) => r.json())
+      .then((data: { addresses: string[] }) =>
+        setBetaAddresses(new Set(data.addresses ?? []))
+      )
+      .catch(() => setBetaAddresses(new Set()));
+  }, [authenticated]);
 
   useEffect(() => {
     if (!userAddress) {
@@ -244,9 +258,32 @@ export default function Home() {
         <h1 className="text-xl font-semibold">Telis</h1>
         {authenticated ? (
           <div className="flex items-center gap-3">
-            <span className="text-sm text-zinc-500 truncate max-w-[120px]">
-              {userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}
-            </span>
+            <div className="flex flex-col items-end gap-0.5">
+              <span className="text-sm text-zinc-500 truncate max-w-[120px]">
+                {userAddress?.slice(0, 6)}...{userAddress?.slice(-4)}
+              </span>
+              {userAddress && betaAddresses?.has(userAddress.toLowerCase()) && (
+                <span
+                  className="inline-flex items-center gap-1 text-[10px] font-medium text-amber-600 dark:text-amber-400"
+                  title="Beta tester"
+                >
+                  <svg
+                    className="size-3 shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                    />
+                  </svg>
+                  Beta tester
+                </span>
+              )}
+            </div>
             <button
               onClick={logout}
               className="rounded-full bg-zinc-200 dark:bg-zinc-800 px-4 py-2 text-sm font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700"

@@ -1,0 +1,27 @@
+{
+  "name": "telis-mega",
+  "version": "1.0.0",
+  "description": "Soulbound NFT on MegaEth",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:mainnet": "hardhat run scripts/deploy.js --network megaeth_mainnet",
+    "deploy:testnet": "hardhat run scripts/deploy.js --network megaeth_testnet",
+    "mint": "hardhat run scripts/mint.js",
+    "mint:batch": "hardhat run scripts/mint-batch.js",
+    "set-base-uri": "hardhat run scripts/set-base-uri.js",
+    "check-token-uri": "hardhat run scripts/check-token-uri.js",
+    "verify": "hardhat verify"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "chai": "^4.5.0",
+    "ethers": "^6.4.0",
+    "hardhat": "^2.22.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5"
+  }
+}
